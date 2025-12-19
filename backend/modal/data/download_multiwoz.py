@@ -48,7 +48,7 @@ class MultiWOZDownloader:
                 else:
                     item.rename(target)
             data_subdir.rmdir()
-            logger.info("✓ Restructured to flat directory")
+            logger.info(" Restructured to flat directory")
 
     def download_multiwoz(self) -> Path:
         zip_path = self.data_dir / "MultiWOZ_2.2.zip"
@@ -56,7 +56,7 @@ class MultiWOZDownloader:
 
         # Check if already downloaded and valid
         if extract_dir.exists() and self.is_valid_dataset(extract_dir):
-            logger.info(f"✓ MultiWOZ dataset already exists at {extract_dir}")
+            logger.info(f"MultiWOZ dataset already exists at {extract_dir}")
             return extract_dir
 
         # Download
@@ -125,7 +125,7 @@ class MultiWOZDownloader:
                     f"Saved {len(conversations)} conversations to {output_file}")
 
             logger.info(
-                "✓MultiWOZ dataset downloaded successfully from HuggingFace")
+                "MultiWOZ dataset downloaded successfully from HuggingFace")
 
         except Exception as e:
             logger.error(f"Failed to download from HuggingFace: {e}")
@@ -166,12 +166,12 @@ class MultiWOZDownloader:
                                 if data and "services" in data[0]:
                                     stats["sample_services"].update(
                                         data[0]["services"])
-                    except Exception as e:
+                    except (json.JSONDecodeError, IOError, KeyError) as e:
                         logger.warning(
                             f"Could not read {dialogue_files[0]}: {e}")
 
                 logger.info(
-                    f"✓ Found {len(dialogue_files)} dialogue file(s) in {split}/")
+                    f"Found {len(dialogue_files)} dialogue file(s) in {split}/")
 
         # Check for additional files
         stats["has_dialog_acts"] = (dataset_dir / "dialog_acts.json").exists()
@@ -203,8 +203,7 @@ def main():
     # Verify dataset
     stats = downloader.verify_dataset(dataset_dir)
     logger.info(" MultiWOZ dataset ready!")
-    logger.info(f"📁 Dataset location: {dataset_dir}")
-    logger.info("=" * 60)
+    logger.info(f"Dataset location: {dataset_dir}")
 
 
 if __name__ == "__main__":
